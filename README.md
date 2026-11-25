@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PustakaKu
 
-## Getting Started
+Aplikasi web sederhana untuk mencatat buku perpustakaan SMA.
+UAS Web Application Development, Universitas Prasetiya Mulya, Semester Ganjil 2026-1.
 
-First, run the development server:
+**Stack:** Next.js (App Router) + TypeScript, Tailwind CSS, Prisma 6 + SQLite, Server Actions.
+
+## Menjalankan
+
+Prasyarat: Node.js 20 atau lebih baru.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Saat `npm install`, Prisma Client dibuat otomatis. Saat `npm run dev`, migrasi dan seed
+(10 buku) berjalan otomatis. Seed hanya mengisi data jika tabel masih kosong.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Mengulang dari data awal: hapus `prisma/dev.db`, lalu jalankan `npm run dev` lagi.
 
-## Learn More
+## Halaman
 
-To learn more about Next.js, take a look at the following resources:
+| Rute | Isi |
+|------|-----|
+| `/` | Landing page + tombol ke Daftar Buku |
+| `/buku` | Tabel buku, pencarian judul/penulis, filter kategori dan stok, tombol Tambah buku. Stok merah jika 0 |
+| `/buku/[id]` | Detail buku. ID tidak valid atau tidak ada menampilkan 404 |
+| `/buku/baru` | Form tambah buku dengan validasi server |
+| 404 | `app/not-found.tsx` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Struktur
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `app/layout.tsx` : layout + navbar bersama
+- `app/buku/actions.ts` : Server Action tambah buku
+- `components/` : Navbar, FormBuku
+- `lib/prisma.ts` : koneksi database tunggal
+- `prisma/schema.prisma`, `prisma/migrations/`, `prisma/seed.js` : skema, migrasi, data awal
 
-## Deploy on Vercel
+## Catatan
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Semua query lewat Prisma Client (parameter terikat).
+- `stok` = jumlah tersedia, `stokTotal` = jumlah dimiliki. Buku baru: keduanya sama dengan jumlah stok yang diisi.
+- Tabel daftar bisa digeser horizontal di layar sempit (375px).
